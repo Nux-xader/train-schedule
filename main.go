@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -139,5 +140,5 @@ func main() {
 		})
 	})
 
-	http.ListenAndServe(":3000", r)
+	http.ListenAndServe(os.Args[1], r)
 }
