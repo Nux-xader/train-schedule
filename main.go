@@ -32,6 +32,10 @@ func main() {
 		})
 	}
 
+	r.Get("/health", func(w http.ResponseWriter, _ *http.Request) {
+		w.Write([]byte("ok!"))
+	})
+
 	r.Route("/api", func(r chi.Router) {
 		r.Use(DecryptBodyMiddleware)
 
