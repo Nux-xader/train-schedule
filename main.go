@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -66,7 +67,7 @@ func main() {
 				} else {
 					trains, err = TrainsSchedule(reqPayload.Org, reqPayload.Dest, reqPayload.DepartDate)
 					if err != nil {
-						log.Printf("Failed get train schedule: %v\n", err)
+						log.Printf("Failed get train schedule %s-%s %s: %v\n", reqPayload.Org, reqPayload.Dest, reqPayload.DepartDate, err)
 						w.WriteHeader(500)
 						return
 					}
@@ -113,7 +114,7 @@ func main() {
 				} else {
 					trains, err = TrainsSchedule(reqPayload.Org, reqPayload.Dest, reqPayload.DepartDate)
 					if err != nil {
-						log.Printf("Failed get train schedule: %v\n", err)
+						log.Printf("Failed get train schedule %s-%s %s: %v\n", reqPayload.Org, reqPayload.Dest, reqPayload.DepartDate, err)
 						w.WriteHeader(500)
 						return
 					}
@@ -141,5 +142,6 @@ func main() {
 		})
 	})
 
+	fmt.Println("Started at:", time.Now().UTC().Format(time.RFC3339))
 	http.ListenAndServe(os.Args[1], r)
 }
