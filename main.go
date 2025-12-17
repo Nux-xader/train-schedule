@@ -2,11 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -120,7 +118,6 @@ func main() {
 						return
 					}
 					expiredAt = time.Now().UnixNano() + ((time.Duration(1) * time.Minute).Nanoseconds())
-					fmt.Println("generated: " + strconv.Itoa(int(expiredAt)))
 				}
 
 				found = false
