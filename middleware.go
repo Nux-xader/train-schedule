@@ -20,11 +20,11 @@ func DecryptBodyMiddleware(next http.Handler) http.Handler {
 		{
 			timestamp, err := strconv.ParseInt(r.Header.Get("X-Timestamp"), 10, 64)
 			if err != nil {
-				w.WriteHeader(500)
+				w.WriteHeader(403)
 				return
 			}
 			offset := time.Now().UTC().Unix() - timestamp
-			if offset < 0 || offset > 20 {
+			if offset < -10 || offset > 20 {
 				w.WriteHeader(403)
 				return
 			}
@@ -38,6 +38,10 @@ func DecryptBodyMiddleware(next http.Handler) http.Handler {
 
 		iv := md5.Sum([]byte(r.Header.Get("X-Timestamp") + SecretKey))
 		plainData, err := Decrypt(string(reqBody), iv)
+		if err != nil {
+			w.WriteHeader(403)
+			return
+		}
 
 		ctx := context.WithValue(r.Context(), CtxKey("body"), plainData)
 		ctx = context.WithValue(ctx, CtxKey("iv"), iv)
