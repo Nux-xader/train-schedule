@@ -8,6 +8,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.11.0
 	github.com/go-chi/chi/v5 v5.2.3
 	github.com/go-chi/httprate v0.15.0
+	github.com/go-resty/resty/v2 v2.17.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 )
 
