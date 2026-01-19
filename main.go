@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -14,6 +15,9 @@ import (
 )
 
 func main() {
+	// fmt.Println(GetTrainSchedule("CNP", "KM", "20-01-2026"))
+	// fmt.Println(KaiWebSchedule("CNP", "KM", "20-01-2026"))
+	// fmt.Println(TravelokaTrainsSchedule("CNP", "KM", "20-01-2026"))
 	r := chi.NewRouter()
 	r.Use(httprate.Limit(
 		1500,
@@ -66,17 +70,19 @@ func main() {
 				if found {
 					trains = cachedData.([]Train)
 				} else {
-					trains, err = TrainsSchedule(reqPayload.Org, reqPayload.Dest, reqPayload.DepartDate)
+					trains, err = GetTrainSchedule(reqPayload.Org, reqPayload.Dest, reqPayload.DepartDate)
 					if err != nil {
 						log.Printf("Failed get train schedule: %v\n", err)
 						w.WriteHeader(500)
 						return
 					}
 					c.SetDefault(cacheKey, trains)
+					fmt.Println("generated: " + cacheKey)
 				}
 
 				for _, t := range trains {
-					if reqPayload.TrainId == t.Name+t.Class && t.Stock >= reqPayload.TotPsg {
+					// fmt.Println(reqPayload.TrainId, "-", strings.ToUpper(t.Name+t.Class), "-", t.Stock)
+					if reqPayload.TrainId == strings.ToUpper(t.Name+t.Class) && t.Stock >= reqPayload.TotPsg {
 						w.WriteHeader(200)
 						return
 					}
@@ -113,7 +119,7 @@ func main() {
 					expiredAt = c.Items()[cacheKey].Expiration
 					trains = cachedData.([]Train)
 				} else {
-					trains, err = TrainsSchedule(reqPayload.Org, reqPayload.Dest, reqPayload.DepartDate)
+					trains, err = GetTrainSchedule(reqPayload.Org, reqPayload.Dest, reqPayload.DepartDate)
 					if err != nil {
 						log.Printf("Failed get train schedule: %v\n", err)
 						w.WriteHeader(500)
