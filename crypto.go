@@ -35,7 +35,7 @@ func Decrypt(data string, iv [16]byte) (result string, err error) {
 	if padLength > length {
 		return
 	}
-	result = result[:length-padLength]
 
+	result = result[:length-padLength]
 	return
 }

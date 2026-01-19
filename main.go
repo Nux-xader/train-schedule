@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -72,12 +71,12 @@ func main() {
 				} else {
 					trains, err = GetTrainSchedule(reqPayload.Org, reqPayload.Dest, reqPayload.DepartDate)
 					if err != nil {
-						log.Printf("Failed get train schedule: %v\n", err)
+						log.Printf("Failed get train schedule %s-%s %s: %v\n", reqPayload.Org, reqPayload.Dest, reqPayload.DepartDate, err)
 						w.WriteHeader(500)
 						return
 					}
 					c.SetDefault(cacheKey, trains)
-					fmt.Println("generated: " + cacheKey)
+					log.Printf("generated: %s\n", cacheKey)
 				}
 
 				for _, t := range trains {
@@ -121,12 +120,12 @@ func main() {
 				} else {
 					trains, err = GetTrainSchedule(reqPayload.Org, reqPayload.Dest, reqPayload.DepartDate)
 					if err != nil {
-						log.Printf("Failed get train schedule: %v\n", err)
+						log.Printf("Failed get train schedule %s-%s %s: %v\n", reqPayload.Org, reqPayload.Dest, reqPayload.DepartDate, err)
 						w.WriteHeader(500)
 						return
 					}
 					expiredAt = time.Now().UnixNano() + ((time.Duration(1) * time.Minute).Nanoseconds())
-					fmt.Println("generated: " + strconv.Itoa(int(expiredAt)))
+					log.Printf("generated: %s\n", expiredAt)
 				}
 
 				found = false
@@ -150,5 +149,6 @@ func main() {
 		})
 	})
 
+	fmt.Println("Started at:", time.Now().UTC().Format(time.RFC3339))
 	http.ListenAndServe(os.Args[1], r)
 }

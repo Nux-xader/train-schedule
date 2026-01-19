@@ -20,11 +20,11 @@ func DecryptBodyMiddleware(next http.Handler) http.Handler {
 		{
 			timestamp, err := strconv.ParseInt(r.Header.Get("X-Timestamp"), 10, 64)
 			if err != nil {
-				w.WriteHeader(500)
+				w.WriteHeader(403)
 				return
 			}
 			offset := time.Now().UTC().Unix() - timestamp
-			if offset < 0 || offset > 20 {
+			if offset < -10 || offset > 20 {
 				w.WriteHeader(403)
 				return
 			}
